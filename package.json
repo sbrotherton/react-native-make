@@ -16,6 +16,7 @@
     "plugin"
   ],
   "scripts": {
+    "prepare": "rm -rf dist && yarn tsc",
     "prepublishOnly": "rm -rf dist && yarn tsc",
     "test:types": "yarn tsc --noEmit",
     "test": "yarn test:types",

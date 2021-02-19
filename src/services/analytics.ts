@@ -12,6 +12,6 @@ export const trackTask = (pageName: string, task: ConfigCommandTask) => (
   config: Config,
   args: Record<string, any>
 ): ReturnType<ConfigCommandTask> => {
-  analytics.pageview(pageName).send();
+  // analytics.pageview(pageName).send();
   return task(argv, config, args);
 };
