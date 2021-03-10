@@ -1,4 +1,9 @@
-import {checkImageIsSquare, generateAdaptiveAssets, generateResizedAssets} from '../../../services/image.processing';
+import {
+    checkImageIsSquare,
+    generateAdaptiveAssets,
+    generateFeatureGraphic,
+    generateResizedAssets
+} from '../../../services/image.processing';
 import {config} from './config';
 import {ANDROID_MAIN_PATH, ANDROID_MAIN_RES_PATH} from '../../config';
 import {join} from 'path';
@@ -11,6 +16,7 @@ export const addAndroidIcon = async (iconSource: string, backgroundColor: string
         await generateLegacyIcons(iconSource);
         await generateAdaptiveIcons(iconSource, backgroundColor);
         await generatePlayStoreIcon(iconSource);
+        await generatePlayStoreFeatureImage(iconSource, backgroundColor);
     } catch (err) {
         console.log(err);
     }
@@ -71,6 +77,13 @@ const generatePlayStoreIcon = (iconSource: string) =>
         iconSource,
         `${ANDROID_MAIN_PATH}/ic_launcher-playstore.png`,
         512
+    );
+
+const generatePlayStoreFeatureImage = (iconSource: string, backgroundColor: string) =>
+    generateFeatureGraphic(
+        iconSource,
+        `${ANDROID_MAIN_PATH}/featureGraphic.png`,
+        backgroundColor
     );
 
 const generateAdaptiveIcon = (iconSource: string, density: string, adaptiveValue: number) => {

@@ -42,6 +42,30 @@ export const generateAdaptiveAssets = async (
         .toFile(destinationPath);
 };
 
+export const generateFeatureGraphic = async (
+    sourcePath: string,
+    destinationPath: string,
+    backgroundColor: string,
+    options: ResizeOptions = {
+        fit: 'contain',
+    }
+) => {
+    createDirectoryIfNotExists(destinationPath);
+    return sharp({
+        create: {
+            width: 1024,
+            height: 500,
+            channels: 4,
+            background: backgroundColor
+        }
+    }).composite([{
+        input: await sharp(normalize(sourcePath))
+            .resize(500, 500, options)
+            .toBuffer()
+    }])
+        .toFile(destinationPath);
+};
+
 export const generateResizedAssetsWithoutAlpha = async (
     sourcePath: string,
     destinationPath: string,
