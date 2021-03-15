@@ -21,7 +21,7 @@ export const generateAdaptiveAssets = async (
     sourcePath: string,
     destinationPath: string,
     width: number,
-    height: number = width,
+    iconSize: number,
     options: ResizeOptions = {
         fit: 'contain',
     }
@@ -30,13 +30,13 @@ export const generateAdaptiveAssets = async (
     return sharp({
         create: {
             width,
-            height,
+            height: width,
             channels: 4,
             background: "rgba(255, 255, 255, 0)"
         }
     }).composite([{
         input: await sharp(normalize(sourcePath))
-            .resize(Math.round(width * 0.66), Math.round(height * 0.66), options)
+            .resize(iconSize, iconSize, options)
             .toBuffer()
     }])
         .toFile(destinationPath);

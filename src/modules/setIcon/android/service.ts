@@ -25,10 +25,11 @@ export const addAndroidIcon = async (iconSource: string, backgroundColor: string
 const generateLegacyIcons = (iconSource: string) =>
     Promise.all(
         config.androidIconSizes.map(size =>
-            generateResizedAssets(
+            generateAdaptiveAssets(
                 iconSource,
                 `${ANDROID_MAIN_RES_PATH}/mipmap-${size.density}/ic_launcher.png`,
-                size.value
+                size.value,
+                size.iconSize
             )
         )
     );
@@ -67,8 +68,28 @@ const generateAdaptiveIcons = (iconSource: string, backgroundColor: string) => {
         ]
     );
 
+    // Create the adaptive icon base templates as per Android Asset Studio
+    const destinationDirectoryPath = `${ANDROID_MAIN_RES_PATH}/mipmap-anydpi-v26`;
+
+    // Regular icon
+    copyFile(
+        join(__dirname, `../../../../templates/android/mipmap/ic_launcher.xml`),
+        `${destinationDirectoryPath}/ic_launcher.xml`
+    );
+
+//    // Rounded icon
+//    copyFile(
+//        join(__dirname, `../../../../templates/android/mipmap/ic_launcher_round.xml`),
+//        `${destinationDirectoryPath}/ic_launcher_round.xml`
+//    );
+//
     return Promise.all(
-        config.androidIconSizes.map(size => generateAdaptiveIcon(iconSource, size.density, size.adaptiveValue))
+        config.androidIconSizes.map(size => generateAdaptiveIcon(
+            iconSource,
+            size.density,
+            size.adaptiveValue,
+            size.adaptiveIconSize
+        ))
     );
 };
 
@@ -86,11 +107,12 @@ const generatePlayStoreFeatureImage = (iconSource: string, backgroundColor: stri
         backgroundColor
     );
 
-const generateAdaptiveIcon = (iconSource: string, density: string, adaptiveValue: number) => {
-    const destinationDirectoryPath = `${ANDROID_MAIN_RES_PATH}/mipmap-${density}-v26`;
-    copyFile(
-        join(__dirname, `../../../../templates/android/mipmap/ic_launcher.xml`),
-        `${destinationDirectoryPath}/ic_launcher.xml`
+const generateAdaptiveIcon = (iconSource: string, density: string, adaptiveValue: number, adaptiveIconSize: number) => {
+    const destinationDirectoryPath = `${ANDROID_MAIN_RES_PATH}/mipmap-${density}`;
+    return generateAdaptiveAssets(
+        iconSource,
+        `${destinationDirectoryPath}/ic_foreground.png`,
+        adaptiveValue,
+        adaptiveIconSize
     );
-    return generateAdaptiveAssets(iconSource, `${destinationDirectoryPath}/ic_foreground.png`, adaptiveValue);
 };
