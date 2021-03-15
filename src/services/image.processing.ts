@@ -42,6 +42,66 @@ export const generateAdaptiveAssets = async (
         .toFile(destinationPath);
 };
 
+export const generateAdaptiveAssetsRounded = async (
+    sourcePath: string,
+    destinationPath: string,
+    width: number,
+    iconSize: number,
+    options: ResizeOptions = {
+        fit: 'contain',
+    }
+) => {
+    const rect = Buffer.from(
+        `<svg><rect x="0" y="0" width="${iconSize}" height="${iconSize}" rx="${iconSize / 12}" ry="${iconSize / 12}"/></svg>`
+    );
+
+    createDirectoryIfNotExists(destinationPath);
+    return sharp({
+        create: {
+            width,
+            height: width,
+            channels: 4,
+            background: "rgba(255, 255, 255, 0)"
+        }
+    }).composite([{
+        input: await sharp(normalize(sourcePath))
+            .resize(iconSize, iconSize, options)
+            .composite([{input: rect, blend: 'dest-in'}])
+            .toBuffer()
+    }])
+        .toFile(destinationPath);
+};
+
+export const generateAdaptiveAssetsRound = async (
+    sourcePath: string,
+    destinationPath: string,
+    width: number,
+    iconSize: number,
+    options: ResizeOptions = {
+        fit: 'contain',
+    }
+) => {
+    const rect = Buffer.from(
+        `<svg><rect x="0" y="0" width="${iconSize}" height="${iconSize}" rx="${iconSize / 2}" ry="${iconSize / 2}"/></svg>`
+    );
+
+    createDirectoryIfNotExists(destinationPath);
+    return sharp({
+        create: {
+            width,
+            height: width,
+            channels: 4,
+            background: "rgba(255, 255, 255, 0)"
+        }
+    }).composite([{
+        input: await sharp(normalize(sourcePath))
+            .resize(iconSize, iconSize, options)
+            .composite([{input: rect, blend: 'dest-in'}])
+            .toBuffer()
+    }])
+        .toFile(destinationPath);
+};
+
 export const generateFeatureGraphic = async (
     sourcePath: string,
     destinationPath: string,

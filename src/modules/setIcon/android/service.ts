@@ -1,6 +1,6 @@
 import {
     checkImageIsSquare,
-    generateAdaptiveAssets,
+    generateAdaptiveAssets, generateAdaptiveAssetsRound, generateAdaptiveAssetsRounded,
     generateFeatureGraphic,
     generateResizedAssets
 } from '../../../services/image.processing';
@@ -24,14 +24,22 @@ export const addAndroidIcon = async (iconSource: string, backgroundColor: string
 
 const generateLegacyIcons = (iconSource: string) =>
     Promise.all(
-        config.androidIconSizes.map(size =>
-            generateAdaptiveAssets(
-                iconSource,
-                `${ANDROID_MAIN_RES_PATH}/mipmap-${size.density}/ic_launcher.png`,
-                size.value,
-                size.iconSize
-            )
-        )
+        config.androidIconSizes.map(size => {
+            Promise.all([
+                generateAdaptiveAssetsRounded(
+                    iconSource,
+                    `${ANDROID_MAIN_RES_PATH}/mipmap-${size.density}/ic_launcher.png`,
+                    size.value,
+                    size.iconSize
+                ),
+                generateAdaptiveAssetsRound(
+                    iconSource,
+                    `${ANDROID_MAIN_RES_PATH}/mipmap-${size.density}/ic_launcher_round.png`,
+                    size.value,
+                    Math.round(size.value * 0.915)
+                )
+            ])
+        })
     );
 
 const generateAdaptiveIcons = (iconSource: string, backgroundColor: string) => {
@@ -77,12 +85,12 @@ const generateAdaptiveIcons = (iconSource: string, backgroundColor: string) => {
         `${destinationDirectoryPath}/ic_launcher.xml`
     );
 
-//    // Rounded icon
-//    copyFile(
-//        join(__dirname, `../../../../templates/android/mipmap/ic_launcher_round.xml`),
-//        `${destinationDirectoryPath}/ic_launcher_round.xml`
-//    );
-//
+    // Rounded icon
+    copyFile(
+        join(__dirname, `../../../../templates/android/mipmap/ic_launcher_round.xml`),
+        `${destinationDirectoryPath}/ic_launcher_round.xml`
+    );
+
     return Promise.all(
         config.androidIconSizes.map(size => generateAdaptiveIcon(
             iconSource,
