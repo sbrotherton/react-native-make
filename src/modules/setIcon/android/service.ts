@@ -15,6 +15,7 @@ export const addAndroidIcon = async (iconSource: string, backgroundColor: string
         await checkImageIsSquare(iconSource);
         await generateLegacyIcons(iconSource);
         await generateAdaptiveIcons(iconSource, backgroundColor);
+        await generateDrawableIcon(iconSource);
         await generatePlayStoreIcon(iconSource);
         await generatePlayStoreFeatureImage(iconSource, backgroundColor);
     } catch (err) {
@@ -106,6 +107,13 @@ const generatePlayStoreIcon = (iconSource: string) =>
         iconSource,
         `${ANDROID_MAIN_PATH}/ic_launcher-playstore.png`,
         512
+    );
+
+const generateDrawableIcon = (iconSource: string) =>
+    generateResizedAssets(
+        iconSource,
+        `${ANDROID_MAIN_RES_PATH}/drawable/logo.png`,
+        1024
     );
 
 const generatePlayStoreFeatureImage = (iconSource: string, backgroundColor: string) =>
